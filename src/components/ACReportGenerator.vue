@@ -594,38 +594,43 @@ const startPhotoDrag = (field, index, event) => {
 };
 
 const handlePhotoDrop = async (field, event) => {
-  if (dragSource.value && dragSource.value.field !== field) {
-    // Move photo from one field to another
+  if (dragSource.value) {
+    // If dragging from one field to another
     const sourceField = dragSource.value.field;
     const sourceIndex = dragSource.value.index;
+    
+    if (sourceField === field) {
+      // If dropping on the same field, do nothing
+      dragSource.value = null;
+      draggedOver.value = null;
+      return;
+    }
 
     if (Array.isArray(currentEntry.value[sourceField]) && currentEntry.value[sourceField][sourceIndex]) {
-      const movedImage = currentEntry.value[sourceField][sourceIndex];
-      currentEntry.value[sourceField].splice(sourceIndex, 1);
-
-      if (!Array.isArray(currentEntry.value[field])) {
-        currentEntry.value[field] = [];
+      const sourceImage = currentEntry.value[sourceField][sourceIndex];
+      const targetImage = currentEntry.value[field]?.[0] || null;
+      
+      // Swap the images
+      if (targetImage) {
+        // If target has an image, swap them
+        currentEntry.value[sourceField][sourceIndex] = targetImage;
+      } else {
+        // If target is empty, just move the image
+        currentEntry.value[sourceField].splice(sourceIndex, 1);
       }
-      currentEntry.value[field].push(movedImage);
+      
+      // Set the target field with the source image
+      currentEntry.value[field] = [sourceImage];
     }
   } else if (event.dataTransfer.files.length > 0) {
     // Handle file drop from outside
-    const files = event.dataTransfer.files;
-    const uploadedImages = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.startsWith('image/')) {
-        const resizedImage = await resizeImageToSquare(file);
-        uploadedImages.push(resizedImage);
-      }
+    const file = event.dataTransfer.files[0];
+    if (file?.type.startsWith('image/')) {
+      const resizedImage = await resizeImageToSquare(file);
+      currentEntry.value[field] = [resizedImage];
     }
-
-    if (!Array.isArray(currentEntry.value[field])) {
-      currentEntry.value[field] = [];
-    }
-    currentEntry.value[field].push(...uploadedImages);
   }
+  
   dragSource.value = null;
   draggedOver.value = null;
 };
@@ -638,12 +643,44 @@ const removeImage = (field, index) => {
   }
 };
 
-const selectAllPhotos = () => {
+const selectAllPhotos = async () => {
   if (allPhotosSelected.value) {
     resetCurrentEntry();
-  } else {
-    // Open first file input
-    fotoLokasiInput.value?.click();
+    return;
+  }
+  
+  try {
+    // Create a file input element
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*';
+    
+    // Handle file selection
+    input.onchange = async (e) => {
+      const files = Array.from(e.target.files);
+      const imageFields = ['fotoLokasi', 'fotoProses', 'fotoSebelum', 'fotoSesudah'];
+      
+      // Clear all photo fields first
+      imageFields.forEach(field => {
+        currentEntry.value[field] = [];
+      });
+      
+      // Process up to 4 images
+      const maxImages = Math.min(files.length, 4);
+      for (let i = 0; i < maxImages; i++) {
+        const file = files[i];
+        if (file.type.startsWith('image/')) {
+          const resizedImage = await resizeImageToSquare(file);
+          currentEntry.value[imageFields[i]] = [resizedImage];
+        }
+      }
+    };
+    
+    // Trigger file dialog
+    input.click();
+  } catch (error) {
+    console.error('Error selecting photos:', error);
   }
 };
 
