@@ -1,65 +1,92 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-7xl mx-auto">
-      <!-- Header -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">
-          Generator Laporan Service AC
-        </h1>
-        <p class="text-gray-600">
-          FOTO DOKUMENTASI SERVICE AC NON VRV - KANTOR GEDUNG DITJEN IMIGRASI
-        </p>
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+    <div class=" mx-auto">
+      <!-- Header with Back Button -->
+      <div class="mb-6 flex items-center gap-4">
+        <button
+            @click="$emit('back')"
+            class="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Kembali
+        </button>
+      </div>
 
-        <!-- Period Input -->
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Periode
-          </label>
-          <input
-              v-model="period"
-              type="text"
-              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Contoh: September 2025"
-          />
+      <!-- Main Header -->
+      <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold text-slate-900">
+              Generator Laporan Service AC
+            </h1>
+            <p class="text-slate-600 mt-1">
+              FOTO DOKUMENTASI SERVICE
+            </p>
+          </div>
+        </div>
+
+        <!-- Info Inputs -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
+              Nama Gedung / Lokasi
+            </label>
+            <input
+                v-model="buildingName"
+                type="text"
+                class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Contoh: KANTOR GEDUNG DITJEN IMIGRASI"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
+              Periode
+            </label>
+            <input
+                v-model="period"
+                type="text"
+                class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Contoh: September 2025"
+            />
+          </div>
         </div>
       </div>
 
-      <!-- Form Input Entry -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+      <!-- Entry Form -->
+      <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
           Tambah Data Service
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Nomor
-            </label>
-            <input
-                v-model="currentEntry.no"
-                type="number"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="No urut"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Lokasi
-            </label>
-            <input
-                v-model="currentEntry.lokasi"
-                type="text"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Nama lokasi"
-            />
-          </div>
+        <!-- Added lokasi field -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-slate-700 mb-2">
+            Lokasi Spesifik
+          </label>
+          <input
+              v-model="currentEntry.lokasi"
+              type="text"
+              class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              placeholder="Contoh: Lantai 2 Ruang Meeting"
+          />
         </div>
 
-        <!-- Upload Foto -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <!-- Updated photo upload section with 4 photos including Proses -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <!-- Foto Lokasi -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Lokasi
             </label>
             <div class="relative">
@@ -72,24 +99,74 @@
               />
               <button
                   @click="$refs.fotoLokasiInput.click()"
-                  class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors flex flex-col items-center justify-center"
+                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
               >
-                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span class="text-sm text-gray-500">Upload Foto</span>
+                <span class="text-sm text-slate-500 font-medium">Upload</span>
               </button>
-              <img
-                  v-if="currentEntry.fotoLokasi"
-                  :src="currentEntry.fotoLokasi"
-                  class="mt-2 w-full h-32 object-cover rounded-lg"
-                  alt="Preview Lokasi"
-              />
+              <div v-if="currentEntry.fotoLokasi" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
+                <img
+                    :src="currentEntry.fotoLokasi"
+                    class="w-full h-full object-cover"
+                    alt="Preview Lokasi"
+                />
+                <button
+                    @click="removeImage('fotoLokasi')"
+                    class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
+          <!-- Foto Proses -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
+              Foto Proses
+            </label>
+            <div class="relative">
+              <input
+                  type="file"
+                  accept="image/*"
+                  @change="handleImageUpload('fotoProses', $event)"
+                  class="hidden"
+                  ref="fotoProsesInput"
+              />
+              <button
+                  @click="$refs.fotoProsesInput.click()"
+                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
+              >
+                <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-sm text-slate-500 font-medium">Upload</span>
+              </button>
+              <div v-if="currentEntry.fotoProses" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
+                <img
+                    :src="currentEntry.fotoProses"
+                    class="w-full h-full object-cover"
+                    alt="Preview Proses"
+                />
+                <button
+                    @click="removeImage('fotoProses')"
+                    class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Foto Sebelum -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Sebelum
             </label>
             <div class="relative">
@@ -102,24 +179,34 @@
               />
               <button
                   @click="$refs.fotoSebelumInput.click()"
-                  class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors flex flex-col items-center justify-center"
+                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
               >
-                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span class="text-sm text-gray-500">Upload Foto</span>
+                <span class="text-sm text-slate-500 font-medium">Upload</span>
               </button>
-              <img
-                  v-if="currentEntry.fotoSebelum"
-                  :src="currentEntry.fotoSebelum"
-                  class="mt-2 w-full h-32 object-cover rounded-lg"
-                  alt="Preview Sebelum"
-              />
+              <div v-if="currentEntry.fotoSebelum" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
+                <img
+                    :src="currentEntry.fotoSebelum"
+                    class="w-full h-full object-cover"
+                    alt="Preview Sebelum"
+                />
+                <button
+                    @click="removeImage('fotoSebelum')"
+                    class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
+          <!-- Foto Sesudah -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Sesudah
             </label>
             <div class="relative">
@@ -132,65 +219,127 @@
               />
               <button
                   @click="$refs.fotoSesudahInput.click()"
-                  class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors flex flex-col items-center justify-center"
+                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
               >
-                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span class="text-sm text-gray-500">Upload Foto</span>
+                <span class="text-sm text-slate-500 font-medium">Upload</span>
               </button>
-              <img
-                  v-if="currentEntry.fotoSesudah"
-                  :src="currentEntry.fotoSesudah"
-                  class="mt-2 w-full h-32 object-cover rounded-lg"
-                  alt="Preview Sesudah"
-              />
+              <div v-if="currentEntry.fotoSesudah" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
+                <img
+                    :src="currentEntry.fotoSesudah"
+                    class="w-full h-full object-cover"
+                    alt="Preview Sesudah"
+                />
+                <button
+                    @click="removeImage('fotoSesudah')"
+                    class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Added Uraian Kegiatan checkbox section -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-semibold text-slate-700">
+              Uraian Kegiatan
+            </label>
+            <button
+                @click="toggleAllActivities"
+                class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ allActivitiesSelected ? 'Uncheck All' : 'Check All' }}
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <label
+                v-for="activity in cleaningActivities"
+                :key="activity"
+                class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+            >
+              <input
+                  type="checkbox"
+                  :value="activity"
+                  v-model="currentEntry.activities"
+                  class="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+              />
+              <span class="text-sm text-slate-700">{{ activity }}</span>
+            </label>
           </div>
         </div>
 
         <button
             @click="addEntry"
             :disabled="!currentEntry.lokasi"
-            class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
+            class="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all font-semibold text-lg flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 hover:shadow-xl"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
-          Tambah Data
+          Tambah ke Daftar
         </button>
       </div>
 
-      <!-- List Entries -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6" v-if="entries.length > 0">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-800">
-            Data Service ({{ entries.length }} entries)
-          </h2>
-          <button
-              @click="generatePDF"
-              class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center gap-2"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Export ke PDF
-          </button>
+      <!-- Updated entries list display -->
+      <div class="bg-white rounded-xl shadow-md p-8 mb-6" v-if="entries.length > 0">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Data Service
+            </h2>
+            <p class="text-slate-600 mt-1">Total: {{ entries.length }} entries ({{ Math.ceil(entries.length / 7) }} halaman)</p>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+                @click="exportToExcel"
+                class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all font-semibold flex items-center gap-2 shadow-lg shadow-green-600/30"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Export Excel
+            </button>
+
+            <button
+                @click="generatePDF"
+                class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all font-semibold flex items-center gap-2 shadow-lg shadow-red-600/30"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              Export PDF
+            </button>
+          </div>
         </div>
 
         <div class="space-y-4">
           <div
-              v-for="entry in entries"
+              v-for="(entry, index) in entries"
               :key="entry.id"
-              class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+              class="border-2 border-slate-200 rounded-lg p-5 hover:shadow-lg hover:border-blue-300 transition-all"
           >
-            <div class="flex justify-between items-start mb-3">
+            <div class="flex justify-between items-start mb-4">
               <div>
-                <h3 class="font-semibold text-gray-800">{{ entry.no }}. {{ entry.lokasi }}</h3>
+                <h3 class="font-bold text-lg text-slate-900">{{ index + 1 }}. {{ entry.lokasi }}</h3>
+                <p class="text-sm text-slate-500 mt-1">{{ entry.activities.length }} kegiatan dipilih</p>
               </div>
               <button
                   @click="deleteEntry(entry.id)"
-                  class="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded transition-colors"
+                  class="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-colors"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -198,41 +347,63 @@
               </button>
             </div>
 
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div v-if="entry.fotoLokasi">
-                <p class="text-xs text-gray-600 mb-1">Lokasi</p>
-                <img :src="entry.fotoLokasi" class="w-full h-24 object-cover rounded" alt="Lokasi" />
+                <p class="text-xs font-semibold text-slate-600 mb-2">Lokasi</p>
+                <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
+                  <img :src="entry.fotoLokasi" class="w-full h-full object-cover" alt="Lokasi" />
+                </div>
+              </div>
+              <div v-if="entry.fotoProses">
+                <p class="text-xs font-semibold text-slate-600 mb-2">Proses</p>
+                <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
+                  <img :src="entry.fotoProses" class="w-full h-full object-cover" alt="Proses" />
+                </div>
               </div>
               <div v-if="entry.fotoSebelum">
-                <p class="text-xs text-gray-600 mb-1">Sebelum</p>
-                <img :src="entry.fotoSebelum" class="w-full h-24 object-cover rounded" alt="Sebelum" />
+                <p class="text-xs font-semibold text-slate-600 mb-2">Sebelum</p>
+                <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
+                  <img :src="entry.fotoSebelum" class="w-full h-full object-cover" alt="Sebelum" />
+                </div>
               </div>
               <div v-if="entry.fotoSesudah">
-                <p class="text-xs text-gray-600 mb-1">Sesudah</p>
-                <img :src="entry.fotoSesudah" class="w-full h-24 object-cover rounded" alt="Sesudah" />
+                <p class="text-xs font-semibold text-slate-600 mb-2">Sesudah</p>
+                <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
+                  <img :src="entry.fotoSesudah" class="w-full h-full object-cover" alt="Sesudah" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Preview Area (Hidden, for PDF generation) -->
-      <div id="printArea" class="hidden"></div>
+      <!-- Empty State -->
+      <div v-else class="bg-white rounded-xl shadow-md p-12 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-100 rounded-full mb-4">
+          <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-slate-900 mb-2">Belum Ada Data</h3>
+        <p class="text-slate-600">Mulai tambahkan data service AC di form di atas</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-const entries = ref([]);
+const buildingName = ref('');
 const period = ref('September 2025');
+const entries = ref([]);
 const currentEntry = ref({
-  no: '',
   lokasi: '',
   fotoLokasi: null,
+  fotoProses: null,
   fotoSebelum: null,
-  fotoSesudah: null
+  fotoSesudah: null,
+  activities: []
 });
 
 const cleaningActivities = [
@@ -244,14 +415,51 @@ const cleaningActivities = [
   'Cleaning Boddy Unit'
 ];
 
-const handleImageUpload = (field, event) => {
-  const file = event.target.files[0];
-  if (file) {
+const allActivitiesSelected = computed(() => {
+  return currentEntry.value.activities.length === cleaningActivities.length;
+});
+
+const resizeImageToSquare = (file) => {
+  return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      currentEntry.value[field] = e.target.result;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = Math.min(img.width, img.height);
+        canvas.width = 800;
+        canvas.height = 800;
+
+        const ctx = canvas.getContext('2d');
+        const offsetX = (img.width - size) / 2;
+        const offsetY = (img.height - size) / 2;
+
+        ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, 800, 800);
+        resolve(canvas.toDataURL('image/jpeg', 0.9));
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+  });
+};
+
+const handleImageUpload = async (field, event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const resizedImage = await resizeImageToSquare(file);
+    currentEntry.value[field] = resizedImage;
+  }
+};
+
+const removeImage = (field) => {
+  currentEntry.value[field] = null;
+};
+
+const toggleAllActivities = () => {
+  if (allActivitiesSelected.value) {
+    currentEntry.value.activities = [];
+  } else {
+    currentEntry.value.activities = [...cleaningActivities];
   }
 };
 
@@ -259,16 +467,17 @@ const addEntry = () => {
   if (currentEntry.value.lokasi) {
     entries.value.push({
       ...currentEntry.value,
-      id: Date.now()
+      id: Date.now(),
+      activities: [...currentEntry.value.activities]
     });
 
-    // Reset form
     currentEntry.value = {
-      no: '',
       lokasi: '',
       fotoLokasi: null,
+      fotoProses: null,
       fotoSebelum: null,
-      fotoSesudah: null
+      fotoSesudah: null,
+      activities: []
     };
   }
 };
@@ -278,7 +487,6 @@ const deleteEntry = (id) => {
 };
 
 const generatePDF = () => {
-  // Split entries into pages (7 per page)
   const pages = [];
   for (let i = 0; i < entries.value.length; i += 7) {
     pages.push(entries.value.slice(i, i + 7));
@@ -291,7 +499,7 @@ const generatePDF = () => {
       <meta charset="UTF-8">
       <style>
         @page {
-          size: A4 landscape;
+          size: A4 portrait;
           margin: 15mm;
         }
         * {
@@ -301,7 +509,7 @@ const generatePDF = () => {
         }
         body {
           font-family: Arial, sans-serif;
-          font-size: 10px;
+          font-size: 9px;
         }
         .page {
           page-break-after: always;
@@ -313,62 +521,76 @@ const generatePDF = () => {
         .header {
           text-align: center;
           margin-bottom: 10px;
+          border-bottom: 2px solid #000;
+          padding-bottom: 8px;
         }
         .header h2 {
-          margin: 3px 0;
-          font-size: 14px;
+          margin: 2px 0;
+          font-size: 13px;
+          font-weight: bold;
         }
         .header p {
           margin: 2px 0;
-          font-size: 11px;
+          font-size: 10px;
         }
         table {
           width: 100%;
           border-collapse: collapse;
-          margin-top: 5px;
+          margin-top: 8px;
         }
         th, td {
           border: 1px solid #000;
-          padding: 5px;
+          padding: 4px;
           vertical-align: top;
         }
         th {
-          background-color: #e0e0e0;
+          background-color: #d0d0d0;
           font-weight: bold;
           text-align: center;
-          font-size: 11px;
+          font-size: 10px;
         }
-        .no-col { width: 5%; text-align: center; }
-        .lokasi-col { width: 20%; }
-        .proses-col { width: 25%; }
-        .foto-col { width: 25%; text-align: center; }
+        .no-col { width: 5%; text-align: center; font-weight: bold; }
+        .lokasi-col { width: 19%; text-align: center; }
+        .proses-col { width: 19%; text-align: center; }
+        .sebelum-col { width: 19%; text-align: center; }
+        .sesudah-col { width: 19%; text-align: center; }
+        .kegiatan-col { width: 19%; }
         .foto-img {
-          max-width: 100%;
-          max-height: 120px;
-          object-fit: contain;
+          width: 100%;
+          height: 100px;
+          object-fit: cover;
+          display: block;
         }
-        .proses-list {
+        .kegiatan-list {
           list-style: none;
           padding-left: 0;
-          font-size: 9px;
+          font-size: 8px;
+          line-height: 1.4;
         }
-        .proses-list li {
-          margin: 2px 0;
+        .kegiatan-list li {
+          margin: 1px 0;
         }
-        .proses-list li:before {
+        .kegiatan-list li:before {
           content: "> ";
+          font-weight: bold;
+        }
+        .cell-label {
+          font-size: 8px;
+          font-weight: bold;
+          margin-bottom: 3px;
+          text-align: center;
         }
       </style>
     </head>
     <body>
   `;
 
-  pages.forEach((pageEntries, pageIndex) => {
+  pages.forEach((pageEntries) => {
     printContent += `
       <div class="page">
         <div class="header">
           <h2>FOTO DOKUMENTASI SERVICE AC NON VRV</h2>
-          <h2>KANTOR GEDUNG DITJEN IMIGRASI</h2>
+          <h2>${buildingName.value}</h2>
           <p>Periode : ${period.value}</p>
         </div>
 
@@ -378,30 +600,35 @@ const generatePDF = () => {
               <th class="no-col">NO</th>
               <th class="lokasi-col">LOKASI</th>
               <th class="proses-col">PROSES</th>
-              <th class="foto-col">SEBELUM</th>
-              <th class="foto-col">SESUDAH</th>
+              <th class="sebelum-col">SEBELUM</th>
+              <th class="sesudah-col">SESUDAH</th>
+              <th class="kegiatan-col">URAIAN KEGIATAN</th>
             </tr>
           </thead>
           <tbody>
     `;
 
-    pageEntries.forEach(entry => {
+    pageEntries.forEach((entry, index) => {
       printContent += `
         <tr>
-          <td class="no-col">${entry.no}</td>
+          <td class="no-col">${entries.value.indexOf(entry) + 1}</td>
           <td class="lokasi-col">
             ${entry.fotoLokasi ? `<img src="${entry.fotoLokasi}" class="foto-img" alt="Lokasi" />` : ''}
           </td>
           <td class="proses-col">
-            <ul class="proses-list">
-              ${cleaningActivities.map(activity => `<li>${activity}</li>`).join('')}
-            </ul>
+            ${entry.fotoProses ? `<img src="${entry.fotoProses}" class="foto-img" alt="Proses" />` : ''}
           </td>
-          <td class="foto-col">
+          <td class="sebelum-col">
             ${entry.fotoSebelum ? `<img src="${entry.fotoSebelum}" class="foto-img" alt="Sebelum" />` : ''}
           </td>
-          <td class="foto-col">
+          <td class="sesudah-col">
             ${entry.fotoSesudah ? `<img src="${entry.fotoSesudah}" class="foto-img" alt="Sesudah" />` : ''}
+          </td>
+          <td class="kegiatan-col">
+            <div class="cell-label">${entry.lokasi}</div>
+            <ul class="kegiatan-list">
+              ${entry.activities.map(activity => `<li>${activity}</li>`).join('')}
+            </ul>
           </td>
         </tr>
       `;
@@ -419,14 +646,30 @@ const generatePDF = () => {
     </html>
   `;
 
-  // Open print window
   const printWindow = window.open('', '_blank');
   printWindow.document.write(printContent);
   printWindow.document.close();
 
-  // Wait for images to load before printing
   setTimeout(() => {
     printWindow.print();
   }, 500);
+};
+
+const exportToExcel = () => {
+  let csvContent = "data:text/csv;charset=utf-8,";
+  csvContent += "No,Lokasi,Uraian Kegiatan,Foto Lokasi,Foto Proses,Foto Sebelum,Foto Sesudah\n";
+
+  entries.value.forEach((entry, index) => {
+    const activities = entry.activities.join('; ');
+    csvContent += `${index + 1},"${entry.lokasi}","${activities}",${entry.fotoLokasi ? 'Yes' : 'No'},${entry.fotoProses ? 'Yes' : 'No'},${entry.fotoSebelum ? 'Yes' : 'No'},${entry.fotoSesudah ? 'Yes' : 'No'}\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `${buildingName.value}_${period.value}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 </script>
