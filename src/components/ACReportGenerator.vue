@@ -27,7 +27,7 @@
               Generator Laporan Service AC
             </h1>
             <p class="text-slate-600 mt-1">
-              FOTO DOKUMENTASI SERVICE
+              {{ dynamicTitle }}
             </p>
           </div>
         </div>
@@ -82,10 +82,29 @@
           />
         </div>
 
-        <!-- Updated photo upload section with 4 photos including Proses -->
+        <!-- Updated photo upload section with drag and drop capability and select all button -->
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-700">Foto Dokumentasi</h3>
+          <button
+              @click="selectAllPhotos"
+              class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ allPhotosSelected ? 'Bersihkan' : 'Pilih Semua' }}
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <!-- Added drag and drop functionality to photo upload -->
           <!-- Foto Lokasi -->
-          <div>
+          <div
+              @dragover.prevent="draggedOver = 'fotoLokasi'"
+              @dragleave.prevent="draggedOver = null"
+              @drop.prevent="handlePhotoDrop('fotoLokasi', $event)"
+              :class="['transition-colors', draggedOver === 'fotoLokasi' ? 'bg-blue-50' : '']"
+          >
             <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Lokasi
             </label>
@@ -94,12 +113,16 @@
                   type="file"
                   accept="image/*"
                   @change="handleImageUpload('fotoLokasi', $event)"
+                  multiple
                   class="hidden"
                   ref="fotoLokasiInput"
               />
               <button
-                  @click="$refs.fotoLokasiInput.click()"
-                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
+                  @click="fotoLokasiInput.click()"
+                  :class="[
+                    'w-full aspect-square border-2 border-dashed rounded-lg transition-all flex flex-col items-center justify-center bg-slate-50',
+                    draggedOver === 'fotoLokasi' ? 'border-blue-500 bg-blue-50' : 'border-slate-300 hover:border-blue-500 hover:bg-blue-50'
+                  ]"
               >
                 <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -108,9 +131,13 @@
               </button>
               <div v-if="currentEntry.fotoLokasi" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
                 <img
-                    :src="currentEntry.fotoLokasi"
+                    v-for="(image, index) in currentEntry.fotoLokasi"
+                    :key="index"
+                    :src="image"
                     class="w-full h-full object-cover"
                     alt="Preview Lokasi"
+                    draggable="true"
+                    @dragstart="startPhotoDrag('fotoLokasi', $event)"
                 />
                 <button
                     @click="removeImage('fotoLokasi')"
@@ -125,7 +152,12 @@
           </div>
 
           <!-- Foto Proses -->
-          <div>
+          <div
+              @dragover.prevent="draggedOver = 'fotoProses'"
+              @dragleave.prevent="draggedOver = null"
+              @drop.prevent="handlePhotoDrop('fotoProses', $event)"
+              :class="['transition-colors', draggedOver === 'fotoProses' ? 'bg-blue-50' : '']"
+          >
             <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Proses
             </label>
@@ -134,12 +166,16 @@
                   type="file"
                   accept="image/*"
                   @change="handleImageUpload('fotoProses', $event)"
+                  multiple
                   class="hidden"
                   ref="fotoProsesInput"
               />
               <button
-                  @click="$refs.fotoProsesInput.click()"
-                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
+                  @click="fotoProsesInput.click()"
+                  :class="[
+                    'w-full aspect-square border-2 border-dashed rounded-lg transition-all flex flex-col items-center justify-center bg-slate-50',
+                    draggedOver === 'fotoProses' ? 'border-blue-500 bg-blue-50' : 'border-slate-300 hover:border-blue-500 hover:bg-blue-50'
+                  ]"
               >
                 <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -148,9 +184,13 @@
               </button>
               <div v-if="currentEntry.fotoProses" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
                 <img
-                    :src="currentEntry.fotoProses"
+                    v-for="(image, index) in currentEntry.fotoProses"
+                    :key="index"
+                    :src="image"
                     class="w-full h-full object-cover"
                     alt="Preview Proses"
+                    draggable="true"
+                    @dragstart="startPhotoDrag('fotoProses', $event)"
                 />
                 <button
                     @click="removeImage('fotoProses')"
@@ -165,7 +205,12 @@
           </div>
 
           <!-- Foto Sebelum -->
-          <div>
+          <div
+              @dragover.prevent="draggedOver = 'fotoSebelum'"
+              @dragleave.prevent="draggedOver = null"
+              @drop.prevent="handlePhotoDrop('fotoSebelum', $event)"
+              :class="['transition-colors', draggedOver === 'fotoSebelum' ? 'bg-blue-50' : '']"
+          >
             <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Sebelum
             </label>
@@ -174,12 +219,16 @@
                   type="file"
                   accept="image/*"
                   @change="handleImageUpload('fotoSebelum', $event)"
+                  multiple
                   class="hidden"
                   ref="fotoSebelumInput"
               />
               <button
-                  @click="$refs.fotoSebelumInput.click()"
-                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
+                  @click="fotoSebelumInput.click()"
+                  :class="[
+                    'w-full aspect-square border-2 border-dashed rounded-lg transition-all flex flex-col items-center justify-center bg-slate-50',
+                    draggedOver === 'fotoSebelum' ? 'border-blue-500 bg-blue-50' : 'border-slate-300 hover:border-blue-500 hover:bg-blue-50'
+                  ]"
               >
                 <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -188,9 +237,13 @@
               </button>
               <div v-if="currentEntry.fotoSebelum" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
                 <img
-                    :src="currentEntry.fotoSebelum"
+                    v-for="(image, index) in currentEntry.fotoSebelum"
+                    :key="index"
+                    :src="image"
                     class="w-full h-full object-cover"
                     alt="Preview Sebelum"
+                    draggable="true"
+                    @dragstart="startPhotoDrag('fotoSebelum', $event)"
                 />
                 <button
                     @click="removeImage('fotoSebelum')"
@@ -205,7 +258,12 @@
           </div>
 
           <!-- Foto Sesudah -->
-          <div>
+          <div
+              @dragover.prevent="draggedOver = 'fotoSesudah'"
+              @dragleave.prevent="draggedOver = null"
+              @drop.prevent="handlePhotoDrop('fotoSesudah', $event)"
+              :class="['transition-colors', draggedOver === 'fotoSesudah' ? 'bg-blue-50' : '']"
+          >
             <label class="block text-sm font-semibold text-slate-700 mb-2">
               Foto Sesudah
             </label>
@@ -214,12 +272,16 @@
                   type="file"
                   accept="image/*"
                   @change="handleImageUpload('fotoSesudah', $event)"
+                  multiple
                   class="hidden"
                   ref="fotoSesudahInput"
               />
               <button
-                  @click="$refs.fotoSesudahInput.click()"
-                  class="w-full aspect-square border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-500 transition-all flex flex-col items-center justify-center bg-slate-50 hover:bg-blue-50"
+                  @click="fotoSesudahInput.click()"
+                  :class="[
+                    'w-full aspect-square border-2 border-dashed rounded-lg transition-all flex flex-col items-center justify-center bg-slate-50',
+                    draggedOver === 'fotoSesudah' ? 'border-blue-500 bg-blue-50' : 'border-slate-300 hover:border-blue-500 hover:bg-blue-50'
+                  ]"
               >
                 <svg class="w-10 h-10 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -228,9 +290,13 @@
               </button>
               <div v-if="currentEntry.fotoSesudah" class="mt-2 relative aspect-square rounded-lg overflow-hidden border border-slate-200">
                 <img
-                    :src="currentEntry.fotoSesudah"
+                    v-for="(image, index) in currentEntry.fotoSesudah"
+                    :key="index"
+                    :src="image"
                     class="w-full h-full object-cover"
                     alt="Preview Sesudah"
+                    draggable="true"
+                    @dragstart="startPhotoDrag('fotoSesudah', $event)"
                 />
                 <button
                     @click="removeImage('fotoSesudah')"
@@ -351,25 +417,25 @@
               <div v-if="entry.fotoLokasi">
                 <p class="text-xs font-semibold text-slate-600 mb-2">Lokasi</p>
                 <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
-                  <img :src="entry.fotoLokasi" class="w-full h-full object-cover" alt="Lokasi" />
+                  <img v-for="(image, index) in entry.fotoLokasi" :key="index" :src="image" class="w-full h-full object-cover" alt="Lokasi" />
                 </div>
               </div>
               <div v-if="entry.fotoProses">
                 <p class="text-xs font-semibold text-slate-600 mb-2">Proses</p>
                 <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
-                  <img :src="entry.fotoProses" class="w-full h-full object-cover" alt="Proses" />
+                  <img v-for="(image, index) in entry.fotoProses" :key="index" :src="image" class="w-full h-full object-cover" alt="Proses" />
                 </div>
               </div>
               <div v-if="entry.fotoSebelum">
                 <p class="text-xs font-semibold text-slate-600 mb-2">Sebelum</p>
                 <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
-                  <img :src="entry.fotoSebelum" class="w-full h-full object-cover" alt="Sebelum" />
+                  <img v-for="(image, index) in entry.fotoSebelum" :key="index" :src="image" class="w-full h-full object-cover" alt="Sebelum" />
                 </div>
               </div>
               <div v-if="entry.fotoSesudah">
                 <p class="text-xs font-semibold text-slate-600 mb-2">Sesudah</p>
                 <div class="aspect-square rounded-lg overflow-hidden border border-slate-200">
-                  <img :src="entry.fotoSesudah" class="w-full h-full object-cover" alt="Sesudah" />
+                  <img v-for="(image, index) in entry.fotoSesudah" :key="index" :src="image" class="w-full h-full object-cover" alt="Sesudah" />
                 </div>
               </div>
             </div>
@@ -397,12 +463,14 @@ import { ref, computed } from 'vue';
 const buildingName = ref('');
 const period = ref('September 2025');
 const entries = ref([]);
+const draggedOver = ref(null);
+const dragSource = ref(null);
 const currentEntry = ref({
   lokasi: '',
-  fotoLokasi: null,
-  fotoProses: null,
-  fotoSebelum: null,
-  fotoSesudah: null,
+  fotoLokasi: [],
+  fotoProses: [],
+  fotoSebelum: [],
+  fotoSesudah: [],
   activities: []
 });
 
@@ -410,10 +478,50 @@ const cleaningActivities = [
   'Cleaning Evaporator',
   'Cleaning Filter Udara',
   'Cleaning Bak Drain',
-  'Cleaning Pompa Drain',
   'Cleaning Jalur Drain',
   'Cleaning Boddy Unit'
 ];
+
+const dynamicTitle = computed(() => {
+  if (currentEntry.value.activities.length === 0) {
+    return 'FOTO DOKUMENTASI SERVICE';
+  }
+
+  // Map activities to their AC types
+  const acTypes = new Set();
+  const typeMap = {
+    'Cassette': 'AC CASSETTE',
+    'Split Wall': 'AC SPLIT WALL',
+    'AHU': 'AC AHU',
+    'Evaporator': 'AC EVAPORATOR',
+    'Filter Udara': 'AC FILTER UDARA',
+    'Drain': 'AC DRAIN'
+  };
+
+  currentEntry.value.activities.forEach(activity => {
+    // Check each activity against the type map
+    Object.entries(typeMap).forEach(([key, type]) => {
+      if (activity.includes(key)) {
+        acTypes.add(type);
+      }
+    });
+  });
+
+  if (acTypes.size === 0) {
+    return 'FOTO DOKUMENTASI SERVICE';
+  }
+
+  const typesList = Array.from(acTypes);
+  const titleSuffix = typesList.join(' & ');
+  return `FOTO DOKUMENTASI SERVICE ${titleSuffix}`;
+});
+
+const allPhotosSelected = computed(() => {
+  return !!(currentEntry.value.fotoLokasi.length > 0 &&
+      currentEntry.value.fotoProses.length > 0 &&
+      currentEntry.value.fotoSebelum.length > 0 &&
+      currentEntry.value.fotoSesudah.length > 0);
+});
 
 const allActivitiesSelected = computed(() => {
   return currentEntry.value.activities.length === cleaningActivities.length;
@@ -444,15 +552,69 @@ const resizeImageToSquare = (file) => {
 };
 
 const handleImageUpload = async (field, event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const resizedImage = await resizeImageToSquare(file);
-    currentEntry.value[field] = resizedImage;
+  const files = event.target.files;
+  if (files && files.length > 0) {
+    const uploadedImages = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.startsWith('image/')) {
+        const resizedImage = await resizeImageToSquare(file);
+        uploadedImages.push(resizedImage);
+      }
+    }
+
+    // If this field already has images, append new ones; otherwise set them
+    if (Array.isArray(currentEntry.value[field])) {
+      currentEntry.value[field].push(...uploadedImages);
+    } else if (currentEntry.value[field]) {
+      currentEntry.value[field] = [currentEntry.value[field], ...uploadedImages];
+    } else {
+      // If multiple files, store as array; if single, store as string for backward compatibility
+      currentEntry.value[field] = uploadedImages.length === 1 ? uploadedImages[0] : uploadedImages;
+    }
   }
 };
 
+const startPhotoDrag = (field, event) => {
+  dragSource.value = field;
+  event.dataTransfer.effectAllowed = 'move';
+};
+
+const handlePhotoDrop = async (field, event) => {
+  if (dragSource.value && dragSource.value !== field) {
+    // Swap photos between fields
+    const temp = currentEntry.value[dragSource.value];
+    currentEntry.value[dragSource.value] = currentEntry.value[field];
+    currentEntry.value[field] = temp;
+  } else if (event.dataTransfer.files.length > 0) {
+    // Handle file drop
+    const file = event.dataTransfer.files[0];
+    if (file.type.startsWith('image/')) {
+      const resizedImage = await resizeImageToSquare(file);
+      currentEntry.value[field] = resizedImage;
+    }
+  }
+  dragSource.value = null;
+  draggedOver.value = null;
+};
+
 const removeImage = (field) => {
-  currentEntry.value[field] = null;
+  currentEntry.value[field] = [];
+};
+
+const selectAllPhotos = () => {
+  if (allPhotosSelected.value) {
+    currentEntry.value.fotoLokasi = [];
+    currentEntry.value.fotoProses = [];
+    currentEntry.value.fotoSebelum = [];
+    currentEntry.value.fotoSesudah = [];
+  } else {
+    // Open first file input by default
+    if (currentEntry.value.fotoLokasi.length === 0) {
+      document.querySelector('#fotoLokasiInput').click();
+    }
+  }
 };
 
 const toggleAllActivities = () => {
@@ -473,10 +635,10 @@ const addEntry = () => {
 
     currentEntry.value = {
       lokasi: '',
-      fotoLokasi: null,
-      fotoProses: null,
-      fotoSebelum: null,
-      fotoSesudah: null,
+      fotoLokasi: [],
+      fotoProses: [],
+      fotoSebelum: [],
+      fotoSesudah: [],
       activities: []
     };
   }
@@ -613,16 +775,16 @@ const generatePDF = () => {
         <tr>
           <td class="no-col">${entries.value.indexOf(entry) + 1}</td>
           <td class="lokasi-col">
-            ${entry.fotoLokasi ? `<img src="${entry.fotoLokasi}" class="foto-img" alt="Lokasi" />` : ''}
+            ${entry.fotoLokasi.length > 0 ? entry.fotoLokasi.map(image => `<img src="${image}" class="foto-img" alt="Lokasi" />`).join('') : ''}
           </td>
           <td class="proses-col">
-            ${entry.fotoProses ? `<img src="${entry.fotoProses}" class="foto-img" alt="Proses" />` : ''}
+            ${entry.fotoProses.length > 0 ? entry.fotoProses.map(image => `<img src="${image}" class="foto-img" alt="Proses" />`).join('') : ''}
           </td>
           <td class="sebelum-col">
-            ${entry.fotoSebelum ? `<img src="${entry.fotoSebelum}" class="foto-img" alt="Sebelum" />` : ''}
+            ${entry.fotoSebelum.length > 0 ? entry.fotoSebelum.map(image => `<img src="${image}" class="foto-img" alt="Sebelum" />`).join('') : ''}
           </td>
           <td class="sesudah-col">
-            ${entry.fotoSesudah ? `<img src="${entry.fotoSesudah}" class="foto-img" alt="Sesudah" />` : ''}
+            ${entry.fotoSesudah.length > 0 ? entry.fotoSesudah.map(image => `<img src="${image}" class="foto-img" alt="Sesudah" />`).join('') : ''}
           </td>
           <td class="kegiatan-col">
             <div class="cell-label">${entry.lokasi}</div>
@@ -661,7 +823,11 @@ const exportToExcel = () => {
 
   entries.value.forEach((entry, index) => {
     const activities = entry.activities.join('; ');
-    csvContent += `${index + 1},"${entry.lokasi}","${activities}",${entry.fotoLokasi ? 'Yes' : 'No'},${entry.fotoProses ? 'Yes' : 'No'},${entry.fotoSebelum ? 'Yes' : 'No'},${entry.fotoSesudah ? 'Yes' : 'No'}\n`;
+    const fotoLokasi = entry.fotoLokasi.length > 0 ? 'Yes' : 'No';
+    const fotoProses = entry.fotoProses.length > 0 ? 'Yes' : 'No';
+    const fotoSebelum = entry.fotoSebelum.length > 0 ? 'Yes' : 'No';
+    const fotoSesudah = entry.fotoSesudah.length > 0 ? 'Yes' : 'No';
+    csvContent += `${index + 1},"${entry.lokasi}","${activities}",${fotoLokasi},${fotoProses},${fotoSebelum},${fotoSesudah}\n`;
   });
 
   const encodedUri = encodeURI(csvContent);
@@ -672,4 +838,9 @@ const exportToExcel = () => {
   link.click();
   document.body.removeChild(link);
 };
+
+const fotoLokasiInput = ref(null);
+const fotoProsesInput = ref(null);
+const fotoSebelumInput = ref(null);
+const fotoSesudahInput = ref(null);
 </script>
